@@ -1,4 +1,4 @@
-// Custom Cursor with Multi-colored Dripping Effect
+// Custom Cursor with Single Color Cyan Dripping Effect
 let cursor = document.querySelector('.cursor');
 let cursorTrail = document.querySelector('.cursor-trail');
 let particles = [];
@@ -12,21 +12,21 @@ document.addEventListener('mousemove', (e) => {
         cursorTrail.style.top = e.clientY + 'px';
     }, 100);
     
-    // Create multi-colored dripping particles
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff'];
+    // Create cyan dripping particles
+    const colors = ['#00ffff', '#06b6d4', '#0891b2', '#0e7490'];
     
-    if (Math.random() < 0.3) { // 30% chance to create particle
+    if (Math.random() < 0.5) { // 50% chance to create particle
         const particle = document.createElement('div');
         particle.style.position = 'fixed';
-        particle.style.left = e.clientX + (Math.random() - 0.5) * 30 + 'px';
-        particle.style.top = e.clientY + (Math.random() - 0.5) * 30 + 'px';
-        particle.style.width = Math.random() * 4 + 2 + 'px';
-        particle.style.height = Math.random() * 4 + 2 + 'px';
+        particle.style.left = e.clientX + (Math.random() - 0.5) * 40 + 'px';
+        particle.style.top = e.clientY + (Math.random() - 0.5) * 40 + 'px';
+        particle.style.width = Math.random() * 6 + 3 + 'px';
+        particle.style.height = Math.random() * 6 + 3 + 'px';
         particle.style.background = colors[Math.floor(Math.random() * colors.length)];
         particle.style.borderRadius = '50%';
         particle.style.pointerEvents = 'none';
         particle.style.zIndex = '9997';
-        particle.style.boxShadow = `0 0 ${Math.random() * 10 + 5}px ${particle.style.background}`;
+        particle.style.boxShadow = `0 0 ${Math.random() * 15 + 8}px ${particle.style.background}`;
         
         document.body.appendChild(particle);
         
@@ -35,9 +35,9 @@ document.addEventListener('mousemove', (e) => {
         let y = parseFloat(particle.style.top);
         
         const animate = () => {
-            life -= 0.03;
-            y += 2; // Dripping effect
-            x += (Math.random() - 0.5) * 0.5; // Slight horizontal drift
+            life -= 0.02; // Slower fade for more visible effect
+            y += 3; // Faster dripping
+            x += (Math.random() - 0.5) * 1; // More horizontal movement
             
             particle.style.left = x + 'px';
             particle.style.top = y + 'px';
@@ -58,6 +58,8 @@ document.addEventListener('mousemove', (e) => {
 // White Starry Background
 function createStars() {
     const starsContainer = document.querySelector('.stars-container');
+    if (!starsContainer) return;
+    
     const numberOfStars = 150;
     
     for (let i = 0; i < numberOfStars; i++) {
@@ -90,7 +92,7 @@ function animateOnScroll() {
     });
 }
 
-// Skills Accordion
+// Skills Accordion - Fixed to only open one at a time
 function initSkillsAccordion() {
     const skillCards = document.querySelectorAll('.skill-card');
     
@@ -111,9 +113,32 @@ function initSkillsAccordion() {
     });
 }
 
+// Projects Accordion - Only open one category at a time
+function initProjectsAccordion() {
+    const projectCategories = document.querySelectorAll('.project-category');
+    
+    projectCategories.forEach(category => {
+        const header = category.querySelector('.category-header');
+        
+        header.addEventListener('click', () => {
+            // Close all other categories
+            projectCategories.forEach(otherCategory => {
+                if (otherCategory !== category) {
+                    otherCategory.classList.remove('active');
+                }
+            });
+            
+            // Toggle current category
+            category.classList.toggle('active');
+        });
+    });
+}
+
 // Tooltip System
 function initTooltips() {
     const tooltip = document.getElementById('tooltip');
+    if (!tooltip) return;
+    
     const skillItems = document.querySelectorAll('.skill-item[data-tooltip]');
     const socialLinks = document.querySelectorAll('.social-link[data-platform]');
     
@@ -150,33 +175,50 @@ function initTooltips() {
     });
 }
 
-// Project Cards Interaction
-function initProjectCards() {
-    const projectCards = document.querySelectorAll('.project-card');
+// Project Items Interaction
+function initProjectItems() {
+    const projectItems = document.querySelectorAll('.project-item');
     
-    projectCards.forEach(card => {
-        const title = card.querySelector('.project-title');
-        const sourceBtn = card.querySelector('.source-btn');
+    projectItems.forEach(item => {
+        const sourceBtn = item.querySelector('.source-btn');
         
         // Add click handler to source button
         sourceBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+            
+            // Don't proceed if button is disabled
+            if (sourceBtn.disabled) {
+                return;
+            }
+            
             // Add your GitHub links here
-            const projectType = card.getAttribute('data-project');
-            let githubUrl = 'https://github.com/Devgaya-Goyal';
+            const projectType = item.getAttribute('data-project');
+            let githubUrl = '';
             
             switch(projectType) {
-                case 'snake':
-                    githubUrl += '/snake-game';
-                    break;
-                case 'cicd':
-                    githubUrl += '/cicd-pipeline';
+                case 'pingpong':
+                    githubUrl = 'https://github.com/Devgaya-Goyal/PingPong';
                     break;
                 case 'mail':
-                    githubUrl += '/mail-app';
+                    githubUrl = 'https://github.com/Devgaya-Goyal/python-mail';
+                    break;
+                case 'trivia':
+                    githubUrl = 'https://github.com/Devgaya-Goyal/Trivia-using-tlinter';
                     break;
                 case 'media':
-                    githubUrl += '/media-access';
+                    githubUrl = 'https://github.com/Devgaya-Goyal/Media-access';
+                    break;
+                case 'pomodoro':
+                    githubUrl = 'https://github.com/Devgaya-Goyal/Pomodoro';
+                    break;
+                case 'flashcard':
+                    githubUrl = 'https://github.com/Devgaya-Goyal/First-Tkinter-project';
+                    break;
+                case 'cicd':
+                    githubUrl = 'https://github.com/Devgaya-Goyal/cicd-pipeline';
+                    break;
+                default:
+                    githubUrl = 'https://github.com/Devgaya-Goyal';
                     break;
             }
             
@@ -184,12 +226,12 @@ function initProjectCards() {
         });
         
         // Add hover effects
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-10px) scale(1.02)';
+        item.addEventListener('mouseenter', () => {
+            item.style.transform = 'translateX(5px)';
         });
         
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'translateY(0) scale(1)';
+        item.addEventListener('mouseleave', () => {
+            item.style.transform = 'translateX(0)';
         });
     });
 }
@@ -216,17 +258,56 @@ function initSocialLinks() {
     });
 }
 
-// Name Title Animation
+// Name Title Animation - Fixed hover issue
 function initNameAnimation() {
     const nameTitle = document.getElementById('nameTitle');
+    if (!nameTitle) return;
+    
+    let isHovered = false;
     
     nameTitle.addEventListener('mouseenter', () => {
+        isHovered = true;
         nameTitle.style.transform = 'scale(1.05)';
     });
     
     nameTitle.addEventListener('mouseleave', () => {
+        isHovered = false;
         nameTitle.style.transform = 'scale(1)';
     });
+    
+    // Prevent hover effect when not actually hovering
+    nameTitle.addEventListener('mouseout', () => {
+        if (!isHovered) {
+            nameTitle.style.transform = 'scale(1)';
+        }
+    });
+}
+
+// Hero Buttons Interaction
+function initHeroButtons() {
+    const primaryBtn = document.querySelector('.primary-btn');
+    const secondaryBtn = document.querySelector('.secondary-btn');
+    
+    if (primaryBtn) {
+        primaryBtn.addEventListener('click', () => {
+            // Add CV download functionality
+            console.log('Download CV clicked');
+            // You can add actual download functionality here
+        });
+    }
+    
+    if (secondaryBtn) {
+        secondaryBtn.addEventListener('click', () => {
+            // Scroll to projects section
+            const projectsSection = document.getElementById('projects');
+            if (projectsSection) {
+                projectsSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    }
 }
 
 // Smooth Scrolling
@@ -250,21 +331,26 @@ document.addEventListener('DOMContentLoaded', () => {
     createStars();
     animateOnScroll();
     initSkillsAccordion();
+    initProjectsAccordion();
     initTooltips();
-    initProjectCards();
+    initProjectItems();
     initSocialLinks();
     initNameAnimation();
+    initHeroButtons();
     initSmoothScrolling();
     
     // Make hero section visible immediately
-    document.querySelector('.hero-section').classList.add('visible');
+    const heroSection = document.querySelector('.hero-section');
+    if (heroSection) {
+        heroSection.classList.add('visible');
+    }
 });
 
 // Add some interactive particles on click
 document.addEventListener('click', (e) => {
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+    const colors = ['#00ffff', '#06b6d4', '#0891b2', '#0e7490'];
     
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) { // Increased particle count
         const particle = document.createElement('div');
         particle.style.position = 'fixed';
         particle.style.left = e.clientX + 'px';
@@ -278,8 +364,8 @@ document.addEventListener('click', (e) => {
         
         document.body.appendChild(particle);
         
-        const angle = (Math.PI * 2 * i) / 6;
-        const velocity = 100;
+        const angle = (Math.PI * 2 * i) / 8;
+        const velocity = 120; // Increased velocity
         const vx = Math.cos(angle) * velocity;
         const vy = Math.sin(angle) * velocity;
         
